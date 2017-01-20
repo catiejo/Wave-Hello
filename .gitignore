@@ -5,3 +5,4 @@ AssetTests
 *.userprefs
 *.csproj
 *.sln
+ProjectSettings/UnityAdsSettings.asset
