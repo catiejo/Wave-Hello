@@ -58,7 +58,7 @@ public class Leader : MonoBehaviour
         targetPosition = Damping.Damp(targetPosition, targetWaypoint.transform.position, waypointDamping, Time.deltaTime);
         var direction = (targetPosition - transform.position).normalized;
         transform.Translate(direction * speed * Time.deltaTime);
-        followerRotation = Damping.Damp(followerRotation, Quaternion.LookRotation(Vector3.forward, direction), rotationDamping, Time.deltaTime);
+        followerRotation = Damping.Damp(followerRotation, Quaternion.LookRotation(direction, transform.up), rotationDamping, Time.deltaTime);
 
         var offset = targetWaypoint.transform.position - transform.position;
         var distance = offset.magnitude;
@@ -132,7 +132,7 @@ public class Leader : MonoBehaviour
                 x += 1;
             }
             var triangleHeight = Mathf.Sqrt(2);
-            var targetPosition = transform.position + followerRotation * new Vector3(x - y / 2.0f, -y / triangleHeight, 0) * friendDistance;
+            var targetPosition = transform.position + followerRotation * new Vector3(x - y / 2.0f, 0, -y / triangleHeight) * friendDistance;
             friend.transform.position = Damping.Damp(friend.transform.position, targetPosition, friendDamping, Time.deltaTime);
         }
     }
