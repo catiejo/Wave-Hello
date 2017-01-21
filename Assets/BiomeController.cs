@@ -20,7 +20,6 @@ public class BiomeController : MonoBehaviour {
 
 	void Start() {
 		_transitionTime = 1.5f;
-		FindBiome ("nowhere"); //HACK
 		foreach (BiomeType bio in biomes) {
 			AudioSource audioSource = gameObject.AddComponent<AudioSource>();
 			audioSource.clip = bio.clip;
@@ -28,11 +27,14 @@ public class BiomeController : MonoBehaviour {
 			audioSource.outputAudioMixerGroup = bio.group;
 			audioSource.Play();
 		}
+		FindBiome ("nowhere"); //HACK
 	}
 
 	void Update() {
 		FindBiome ();
 	}
+
+	/** PRIVATE METHODS **/
 
 	private void ChangeBiome() {
 		_currentBiome.snapshot.TransitionTo (_transitionTime);

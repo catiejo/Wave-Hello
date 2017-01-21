@@ -12,9 +12,9 @@ public class FriendType {
 }
 
 public class LoopController : MonoBehaviour {
-	public AudioSource environmentSound; //TODO
-	public AudioMixerGroup audioGroup;
+//	public AudioMixerGroup audioGroup;
 	public FriendType[] friendTypes;
+
 	private List<List<AudioSource>> _audioSources = new List<List<AudioSource>> ();
 
 	void Start() {
@@ -25,7 +25,7 @@ public class LoopController : MonoBehaviour {
 				audioSource.clip = clip;
 				audioSource.volume = 0.0f;
 				audioSource.loop = true;
-				audioSource.outputAudioMixerGroup = audioGroup;
+//				audioSource.outputAudioMixerGroup = audioGroup;
 				audioSource.Play();
 				friendList.Add (audioSource);
 			}
@@ -42,7 +42,7 @@ public class LoopController : MonoBehaviour {
 		}
 		FriendType friend = friendTypes[friendIndex];
 		AddTrack (friend);
-		Debug.Log (friend.name + " #" + friend.count + " joined the " + audioGroup.name + " band.");
+		Debug.Log (friend.name + " #" + friend.count + " joined the band.");
 	}
 
 	public void LeaveBand(string name) {
@@ -51,7 +51,7 @@ public class LoopController : MonoBehaviour {
 			return;
 		}
 		FriendType friend = friendTypes[friendIndex];
-		Debug.Log (friend.name + " #" + friend.count + " left the " + audioGroup.name + " band.");
+		Debug.Log (friend.name + " #" + friend.count + " left the band.");
 		RemoveTrack (friend);
 	}
 
