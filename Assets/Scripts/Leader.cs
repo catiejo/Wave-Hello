@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Leader : MonoBehaviour {
+public class Leader : MonoBehaviour
+{
 
     public float speed = 2f;
     public float friendDamping = 0.5f;
@@ -10,23 +11,66 @@ public class Leader : MonoBehaviour {
     public float maxRecruitingDistance = 10f;
     public Friend closestFriend;
     public List<Friend> recruitedFriends = new List<Friend>();
+    public Waypoint targetWaypoint;
+    public float waypointArrivalDistance = 2f;
+    public Vector3 targetPosition;
+    public float waypointDamping = 1f;
 
     public GameObject highlight;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Use this for initialization
+    void Start()
+    {
+        FindClosestWaypoint();
+        targetPosition = transform.position;
+    }
+
+    void FindClosestWaypoint()
+    {
+        targetWaypoint = null;
+        var waypoints = FindObjectsOfType<Waypoint>();
+        foreach (var waypoint in waypoints)
+        {
+            var distance = (waypoint.transform.position - transform.position).magnitude;
+            if (targetWaypoint == null || distance < (targetWaypoint.transform.position - transform.position).magnitude)
+            {
+                targetWaypoint = waypoint;
+            }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        FollowWaypoints();
         TravelWithFriends();
-        FindClosesFriend();
+        FindClosestFriend();
         HighlightClosestFriend();
         MaybeRecruitClosestFriend();
-	}
+    }
 
-    void FindClosesFriend()
+    void FollowWaypoints()
+    {
+        if (targetWaypoint == null) return;
+        targetPosition = Damping.Damp(targetPosition, targetWaypoint.transform.position, waypointDamping, Time.deltaTime);
+        var direction = (targetPosition - transform.position).normalized;
+        transform.Translate(direction * speed * Time.deltaTime);
+
+        var offset = targetWaypoint.transform.position - transform.position;
+        var distance = offset.magnitude;
+        if (distance < waypointArrivalDistance)
+        {
+            if (Input.GetKey(KeyCode.Space) && targetWaypoint.nextAlt != null)
+            {
+                targetWaypoint = targetWaypoint.nextAlt;
+            } else
+            {
+                targetWaypoint = targetWaypoint.next;
+            }
+        }
+    }
+
+    void FindClosestFriend()
     {
         closestFriend = null;
         var friends = GameObject.FindObjectsOfType<Friend>();
@@ -50,7 +94,8 @@ public class Leader : MonoBehaviour {
             {
                 highlight.SetActive(true);
                 highlight.transform.position = closestFriend.transform.position;
-            } else
+            }
+            else
             {
                 highlight.SetActive(false);
             }
@@ -68,7 +113,6 @@ public class Leader : MonoBehaviour {
 
     void TravelWithFriends()
     {
-        transform.Translate(Vector3.up * speed * Time.deltaTime);
         int x = 0;
         int y = 0;
         foreach (var friend in recruitedFriends)
@@ -77,13 +121,25 @@ public class Leader : MonoBehaviour {
             {
                 y += 1;
                 x = 0;
-            } else
+            }
+            else
             {
                 x += 1;
             }
             var triangleHeight = Mathf.Sqrt(2);
             var targetPosition = transform.position + transform.rotation * new Vector3(x - y / 2.0f, -y / triangleHeight, 0) * friendDistance;
             friend.transform.position = Damping.Damp(friend.transform.position, targetPosition, friendDamping, Time.deltaTime);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, targetPosition);
+        if (targetWaypoint != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, targetWaypoint.transform.position);
         }
     }
 }
