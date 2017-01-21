@@ -57,8 +57,8 @@ public class Leader : MonoBehaviour
 
     void FollowWaypoints()
     {
-        if (targetWaypoint == null) return;
-        targetPosition = Damping.Damp(targetPosition, targetWaypoint.transform.position, waypointDamping, Time.deltaTime);
+		var waypointPosition = targetWaypoint != null ? targetWaypoint.transform.position : targetPosition;
+		targetPosition = Damping.Damp (targetPosition, waypointPosition, waypointDamping, Time.deltaTime);
         var direction = (targetPosition - transform.position).normalized;
         Camera.main.transform.rotation = Damping.Damp(Camera.main.transform.rotation,
             Quaternion.LookRotation(direction, transform.up) * Quaternion.Euler(cameraPitch, 0, 0),
@@ -66,9 +66,9 @@ public class Leader : MonoBehaviour
         transform.Translate(direction * speed * Time.deltaTime);
         followerRotation = Damping.Damp(followerRotation, Quaternion.LookRotation(direction, transform.up), rotationDamping, Time.deltaTime);
 
-        var offset = targetWaypoint.transform.position - transform.position;
+		var offset = waypointPosition - transform.position;
         var distance = offset.magnitude;
-        if (distance < waypointArrivalDistance)
+        if (targetWaypoint != null && distance < waypointArrivalDistance)
         {
             if (Input.GetKey(KeyCode.Space) && targetWaypoint.nextAlt != null)
             {
