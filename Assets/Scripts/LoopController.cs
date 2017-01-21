@@ -67,15 +67,17 @@ public class LoopController : MonoBehaviour {
 	}
 
 	private IEnumerator FadeIn (AudioSource source) {
-		while (source.volume < 1.0f) {
-			source.volume += 0.1f;
+        var volume = source.volume;
+		while (volume < 1.0f) {
+			volume += 0.1f;
+            source.volume = Mathf.Clamp01(volume);
 			yield return new WaitForSeconds (0.25f);
 		}
 	}
 
 	private IEnumerator FadeOut (AudioSource source) {
 		source.volume = 0.0f;
-		yield return new WaitForSeconds(5);
+		yield return new WaitForSeconds(0.25f);
 	}
 
 	private int FindFriend(string name) {
