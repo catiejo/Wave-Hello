@@ -13,6 +13,8 @@ public class Friend : MonoBehaviour {
     public Vector3 homePosition;
     public bool canBeRecruited = true;
     public Leader leader;
+    public float joinDelay = 1.0f;
+    public float joinChance = 0.7f;
 
     public string friendType = "test";
     public AudioSource helloSound;
@@ -33,17 +35,34 @@ public class Friend : MonoBehaviour {
 
     public void JoinBand()
     {
-        FindObjectOfType<EventManager>().JoinBand(this);
-        if (joinSound != null)
+        canBeRecruited = false;
+        StartCoroutine("Joining");
+    }
+
+    public IEnumerator Joining()
+    {
+        yield return new WaitForSeconds(joinDelay);
+        if (Random.value < joinChance)
         {
-            joinSound.Play();
-        }
-        var animation = GetComponent<Animation>();
-        if (animation != null)
+            FindObjectOfType<EventManager>().JoinBand(this);
+            if (joinSound != null)
+            {
+                joinSound.Play();
+            }
+            var animation = GetComponent<Animation>();
+            if (animation != null)
+            {
+                animation.Play();
+            }
+            Invoke("LeaveBand", Mathf.Lerp(minStay, maxStay, Random.value));
+        } else
         {
-            animation.Play();
+            if (noSound != null)
+            {
+                noSound.Play();
+            }
+            Invoke("Reset", resetTime);
         }
-        Invoke("LeaveBand", Mathf.Lerp(minStay, maxStay, Random.value));
     }
 
     public void Update()
@@ -65,16 +84,10 @@ public class Friend : MonoBehaviour {
         FindObjectOfType<EventManager>().LeaveBand(this);
         targetPosition = homePosition;
 
-        if (joinSound != null)
+        if (leaveSound != null)
         {
-            joinSound.Play();
+            leaveSound.Play();
         }
-        var animation = GetComponent<Animation>();
-        if (animation != null)
-        {
-            animation.Play();
-        }
-
         Invoke("Reset", resetTime);
     }
 }

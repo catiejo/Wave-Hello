@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Leader : MonoBehaviour
 {
-
+    public AudioClip[] helloClips;
     public float speed = 2f;
     public float friendDistance = 3f;
     public float maxRecruitingDistance = 10f;
@@ -131,6 +131,12 @@ public class Leader : MonoBehaviour
     {
         if (closestFriend != null && Input.GetKeyUp(KeyCode.Space))
         {
+            var audioSource = GetComponent<AudioSource>();
+            if (audioSource != null && helloClips.Length > 0)
+            {
+                audioSource.clip = helloClips[Random.Range(0, helloClips.Length)];
+                audioSource.Play();
+            }
             closestFriend.JoinBand();
         }
     }
