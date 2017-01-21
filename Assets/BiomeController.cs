@@ -19,6 +19,7 @@ public class BiomeController : MonoBehaviour {
 	private float _transitionTime;
 
 	void Start() {
+        leader = leader != null ? leader : FindObjectOfType<Leader>();
 		_transitionTime = 1.5f;
 		foreach (BiomeType bio in biomes) {
 			AudioSource audioSource = gameObject.AddComponent<AudioSource>();
