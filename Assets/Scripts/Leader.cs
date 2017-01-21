@@ -129,13 +129,18 @@ public class Leader : MonoBehaviour
 
     void MaybeRecruitClosestFriend()
     {
-        if (closestFriend != null && Input.GetKeyUp(KeyCode.Space))
+        if (closestFriend != null && Input.GetKeyDown(KeyCode.Space))
         {
             var audioSource = GetComponent<AudioSource>();
             if (audioSource != null && helloClips.Length > 0)
             {
                 audioSource.clip = helloClips[Random.Range(0, helloClips.Length)];
                 audioSource.Play();
+            }
+            var animation = GetComponent<Animation>();
+            if (animation != null)
+            {
+                animation.Play();
             }
             closestFriend.JoinBand();
         }
