@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Leader : MonoBehaviour
 {
-
+    public AudioClip[] helloClips;
     public float speed = 2f;
-    public float friendDamping = 0.5f;
     public float friendDistance = 3f;
     public float maxRecruitingDistance = 10f;
     public Friend closestFriend;
@@ -29,6 +28,21 @@ public class Leader : MonoBehaviour
         FindClosestWaypoint();
         targetPosition = transform.position;
         followerRotation = transform.rotation;
+
+        EventManager.OnJoinBand += OnJoinBand;
+        EventManager.OnLeaveBand += OnLeaveBand;
+    }
+
+    void OnJoinBand(Friend friend)
+    {
+        recruitedFriends.Add(friend);
+        friend.transform.parent = transform;
+    }
+
+    void OnLeaveBand(Friend friend)
+    {
+        recruitedFriends.Remove(friend);
+        friend.transform.parent = null;
     }
 
     void FindClosestWaypoint()
@@ -87,6 +101,7 @@ public class Leader : MonoBehaviour
         foreach (var friend in friends)
         {
             if (recruitedFriends.Contains(friend)) continue;
+            if (!friend.canBeRecruited) continue;
             var distance = (friend.transform.position - transform.position).magnitude;
             if (distance > maxRecruitingDistance) continue;
             if (closestFriend == null || distance < (closestFriend.transform.position - transform.position).magnitude)
@@ -116,8 +131,12 @@ public class Leader : MonoBehaviour
     {
         if (closestFriend != null && Input.GetKeyUp(KeyCode.Space))
         {
-            recruitedFriends.Add(closestFriend);
-            closestFriend.transform.parent = transform;
+            var audioSource = GetComponent<AudioSource>();
+            if (audioSource != null && helloClips.Length > 0)
+            {
+                audioSource.clip = helloClips[Random.Range(0, helloClips.Length)];
+                audioSource.Play();
+            }
             closestFriend.JoinBand();
         }
     }
@@ -138,8 +157,7 @@ public class Leader : MonoBehaviour
                 x += 1;
             }
             var triangleHeight = Mathf.Sqrt(2);
-            var targetPosition = transform.position + followerRotation * new Vector3(x - y / 2.0f, 0, -y / triangleHeight) * friendDistance;
-            friend.transform.position = Damping.Damp(friend.transform.position, targetPosition, friendDamping, Time.deltaTime);
+            friend.targetPosition = transform.position + followerRotation * new Vector3(x - y / 2.0f, 0, -y / triangleHeight) * friendDistance;
         }
     }
 
