@@ -30,6 +30,7 @@
 		"RenderType" = "Opaque"
 	}
 		ZWrite OFF
+		ZTest OFF
 
 		CGPROGRAM
 #pragma surface surf Standard vertex:SplatmapVert finalcolor:SplatmapFinalColor finalgbuffer:SplatmapFinalGBuffer fullforwardshadows
