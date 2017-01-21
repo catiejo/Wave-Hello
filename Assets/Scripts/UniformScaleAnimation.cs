@@ -6,7 +6,7 @@ using UnityEngine;
 public class UniformScaleAnimation : MonoBehaviour {
 
 	public AnimationCurve scaleCurve;
-    public static float globalBPM = 120;
+    public static float globalBPM = 30;
 
     // Use this for initialization
     void Start () {
