@@ -24,7 +24,7 @@ public class Waypoint : MonoBehaviour {
         }
         if (nextAlt != null)
         {
-            Gizmos.color = Color.gray;
+            Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, nextAlt.transform.position);
             var direction = (nextAlt.transform.position - transform.position).normalized;
             Gizmos.DrawCube(transform.position + direction * 1f, Vector3.one * 0.25f);
