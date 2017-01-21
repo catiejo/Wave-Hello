@@ -18,6 +18,9 @@ public class Leader : MonoBehaviour
     public float rotationDamping = 0.5f;
     public Quaternion followerRotation;
 
+    public float cameraRotationDamping = 0.3f;
+    public float cameraPitch = 90f;
+
     public GameObject highlight;
 
     // Use this for initialization
@@ -57,6 +60,9 @@ public class Leader : MonoBehaviour
         if (targetWaypoint == null) return;
         targetPosition = Damping.Damp(targetPosition, targetWaypoint.transform.position, waypointDamping, Time.deltaTime);
         var direction = (targetPosition - transform.position).normalized;
+        Camera.main.transform.rotation = Damping.Damp(Camera.main.transform.rotation,
+            Quaternion.LookRotation(direction, transform.up) * Quaternion.Euler(cameraPitch, 0, 0),
+            cameraRotationDamping, Time.deltaTime);
         transform.Translate(direction * speed * Time.deltaTime);
         followerRotation = Damping.Damp(followerRotation, Quaternion.LookRotation(direction, transform.up), rotationDamping, Time.deltaTime);
 
