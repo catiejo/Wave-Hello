@@ -27,32 +27,34 @@ public class BiomeController : MonoBehaviour {
 			audioSource.outputAudioMixerGroup = bio.group;
 			audioSource.Play();
 		}
-		FindBiome ("nowhere"); //HACK
+		FindBiome();
 	}
 
 	void Update() {
-		FindBiome ();
+		FindBiome();
 	}
 
 	/** PRIVATE METHODS **/
 
 	private void ChangeBiome() {
+        if (_currentBiome == null) return;
 		_currentBiome.snapshot.TransitionTo (_transitionTime);
 	}
 
 
 	private void FindBiome() {
-		FindBiome (_currentBiome.name);
-	}
-
-	private void FindBiome(string name) {
-		RaycastHit hit;
+        var currentName = _currentBiome != null ? _currentBiome.name : "nowhere";
+        RaycastHit hit;
 		if (Physics.Raycast (leader.transform.position + Vector3.up, Vector3.down, out hit)) {
 			var tag = hit.collider.gameObject.tag;
-			if (tag != name) {
-				_currentBiome = GetBiome(tag);
-				ChangeBiome ();
-				Debug.Log ("changed to " + tag + " biome.");
+			if (tag != currentName) {
+                var nextBiome = GetBiome(tag);
+                if (nextBiome != null)
+                {
+                    _currentBiome = nextBiome;
+                    ChangeBiome();
+                    Debug.Log("changed to " + tag + " biome.");
+                }
 			}
 		}
 	}
