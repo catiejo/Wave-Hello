@@ -112,6 +112,7 @@ public class Leader : MonoBehaviour
         {
             recruitedFriends.Add(closestFriend);
             closestFriend.transform.parent = transform;
+            closestFriend.JoinBand();
         }
     }
 

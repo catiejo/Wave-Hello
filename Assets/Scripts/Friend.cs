@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class Friend : MonoBehaviour {
 
+    public string friendType = "test";
+
     public void JoinBand()
     {
-        
+        FindObjectOfType<EventManager>().JoinBand(friendType);
     }
 
-	// Use this for initialization
-	void Start () {
+    public void LeaveBand()
+    {
+        FindObjectOfType<EventManager>().LeaveBand(friendType);
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
