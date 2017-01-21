@@ -15,6 +15,8 @@ public class Leader : MonoBehaviour
     public float waypointArrivalDistance = 2f;
     public Vector3 targetPosition;
     public float waypointDamping = 1f;
+    public float rotationDamping = 0.5f;
+    public Quaternion followerRotation;
 
     public GameObject highlight;
 
@@ -23,6 +25,7 @@ public class Leader : MonoBehaviour
     {
         FindClosestWaypoint();
         targetPosition = transform.position;
+        followerRotation = transform.rotation;
     }
 
     void FindClosestWaypoint()
@@ -55,6 +58,7 @@ public class Leader : MonoBehaviour
         targetPosition = Damping.Damp(targetPosition, targetWaypoint.transform.position, waypointDamping, Time.deltaTime);
         var direction = (targetPosition - transform.position).normalized;
         transform.Translate(direction * speed * Time.deltaTime);
+        followerRotation = Damping.Damp(followerRotation, Quaternion.LookRotation(Vector3.forward, direction), rotationDamping, Time.deltaTime);
 
         var offset = targetWaypoint.transform.position - transform.position;
         var distance = offset.magnitude;
@@ -127,7 +131,7 @@ public class Leader : MonoBehaviour
                 x += 1;
             }
             var triangleHeight = Mathf.Sqrt(2);
-            var targetPosition = transform.position + transform.rotation * new Vector3(x - y / 2.0f, -y / triangleHeight, 0) * friendDistance;
+            var targetPosition = transform.position + followerRotation * new Vector3(x - y / 2.0f, -y / triangleHeight, 0) * friendDistance;
             friend.transform.position = Damping.Damp(friend.transform.position, targetPosition, friendDamping, Time.deltaTime);
         }
     }
