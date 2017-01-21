@@ -76,8 +76,14 @@ public class LoopController : MonoBehaviour {
 	}
 
 	private IEnumerator FadeOut (AudioSource source) {
-		source.volume = 0.0f;
-		yield return new WaitForSeconds(0.25f);
+		//FIXME: Could cause problems if called while FadeIn is running on same object
+		//Maybe add time limit?
+		var volume = source.volume;
+		while (volume > 1.0f) {
+			volume -= 0.1f;
+			source.volume = Mathf.Clamp01(volume);
+			yield return new WaitForSeconds (0.25f);
+		}
 	}
 
 	private int FindFriend(string name) {
