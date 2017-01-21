@@ -35,24 +35,24 @@ public class LoopController : MonoBehaviour {
 		EventManager.OnLeaveBand += LeaveBand;
 	}
 
-	public void JoinBand(string name) {
-		var friendIndex = FindFriend (name);
+	public void JoinBand(Friend friend) {
+		var friendIndex = FindFriend (friend.friendType);
 		if (friendIndex == -1) {
 			return;
 		}
-		FriendType friend = friendTypes[friendIndex];
-		AddTrack (friend);
-		Debug.Log (friend.name + " #" + friend.count + " joined the band.");
+		FriendType friendType = friendTypes[friendIndex];
+		AddTrack (friendType);
+		Debug.Log (friendType.name + " #" + friendType.count + " joined the band.");
 	}
 
-	public void LeaveBand(string name) {
-		var friendIndex = FindFriend (name);
+	public void LeaveBand(Friend friend) {
+		var friendIndex = FindFriend (friend.friendType);
 		if (friendIndex == -1) {
 			return;
 		}
-		FriendType friend = friendTypes[friendIndex];
-		Debug.Log (friend.name + " #" + friend.count + " left the band.");
-		RemoveTrack (friend);
+		FriendType friendType = friendTypes[friendIndex];
+		Debug.Log (friendType.name + " #" + friendType.count + " left the band.");
+		RemoveTrack (friendType);
 	}
 
 	/** PRIVATE METHODS **/
