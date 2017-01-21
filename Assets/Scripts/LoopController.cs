@@ -13,6 +13,7 @@ public class FriendType {
 
 public class LoopController : MonoBehaviour {
 	public AudioSource environmentSound; //TODO
+	public AudioMixerGroup audioGroup;
 	public FriendType[] friendTypes;
 	private List<List<AudioSource>> _audioSources = new List<List<AudioSource>> ();
 
@@ -24,6 +25,7 @@ public class LoopController : MonoBehaviour {
 				audioSource.clip = clip;
 				audioSource.volume = 0.0f;
 				audioSource.loop = true;
+				audioSource.outputAudioMixerGroup = audioGroup;
 				audioSource.Play();
 				friendList.Add (audioSource);
 			}
@@ -34,14 +36,22 @@ public class LoopController : MonoBehaviour {
 	}
 
 	public void JoinBand(string name) {
-		FriendType friend = friendTypes[FindFriend (name)];
+		var friendIndex = FindFriend (name);
+		if (friendIndex == -1) {
+			return;
+		}
+		FriendType friend = friendTypes[friendIndex];
 		AddTrack (friend);
-		Debug.Log (friend.name + " #" + friend.count + " joined the band.");
+		Debug.Log (friend.name + " #" + friend.count + " joined the " + audioGroup.name + " band.");
 	}
 
 	public void LeaveBand(string name) {
-		FriendType friend = friendTypes[FindFriend (name)];
-		Debug.Log (friend.name + " #" + friend.count + " left the band.");
+		var friendIndex = FindFriend (name);
+		if (friendIndex == -1) {
+			return;
+		}
+		FriendType friend = friendTypes[friendIndex];
+		Debug.Log (friend.name + " #" + friend.count + " left the " + audioGroup.name + " band.");
 		RemoveTrack (friend);
 	}
 
@@ -76,7 +86,7 @@ public class LoopController : MonoBehaviour {
 			}
 			count++;
 		}
-		Debug.Log ("uh oh! you don't have any friends named " + name);
+//		Debug.Log ("uh oh! you don't have any friends named " + name);
 		return -1;
 	}
 
