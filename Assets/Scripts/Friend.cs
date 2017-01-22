@@ -56,10 +56,31 @@ public class Friend : MonoBehaviour {
         StartCoroutine(Joining());
     }
 
+    public bool RequirementsFulfilled()
+    {
+        foreach (var requirement in requirements)
+        {
+            int count = 0;
+            foreach (var friend in leader.recruitedFriends)
+            {
+                if (friend.friendType == requirement.type && friend.level == requirement.level)
+                {
+                    count += 1;
+                }
+            }
+            if (count < requirement.count)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public IEnumerator Joining()
     {
         yield return new WaitForSeconds(joinDelay);
-        if (Random.value < joinChance)
+
+        if (Random.value < joinChance || !RequirementsFulfilled())
         {
             FindObjectOfType<EventManager>().JoinBand(this);
             if (joinSound != null)
