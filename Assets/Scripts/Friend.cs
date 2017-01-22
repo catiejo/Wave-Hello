@@ -36,6 +36,9 @@ public class Friend : MonoBehaviour {
     public AudioSource noSound;
     public AudioSource leaveSound;
 
+    public AnimationClip joinAnimation;
+    public AnimationClip denyAnimation;
+
     public int level;
     public FriendRequirements[] requirements;
 
@@ -88,13 +91,20 @@ public class Friend : MonoBehaviour {
                 joinSound.Play();
             }
             var animation = GetComponent<Animation>();
-            if (animation != null)
+            if (animation != null && joinAnimation != null)
             {
+                animation.clip = joinAnimation;
                 animation.Play();
             }
             Invoke("LeaveBand", Mathf.Lerp(minStay, maxStay, Random.value));
         } else
         {
+            var animation = GetComponent<Animation>();
+            if (animation != null && denyAnimation != null)
+            {
+                animation.clip = denyAnimation;
+                animation.Play();
+            }
             if (noSound != null)
             {
                 noSound.Play();
