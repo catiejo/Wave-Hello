@@ -16,6 +16,7 @@ public class Leader : MonoBehaviour
     public float waypointDamping = 1f;
     public float rotationDamping = 0.5f;
     public Quaternion followerRotation;
+    public Friend[] allFriends;
 
     public float friendXSeparationFactor = 0.75f;
 
@@ -38,6 +39,7 @@ public class Leader : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        allFriends = GameObject.FindObjectsOfType<Friend>();
         trailPoints = new Vector3[maxTrailLength];
 
         FindClosestWaypoint();
@@ -113,7 +115,7 @@ public class Leader : MonoBehaviour
     void FindClosestFriend()
     {
         closestFriend = null;
-        var friends = GameObject.FindObjectsOfType<Friend>();
+        var friends = allFriends;
         foreach (var friend in friends)
         {
             if (recruitedFriends.Contains(friend)) continue;

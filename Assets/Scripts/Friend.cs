@@ -6,6 +6,8 @@ public enum EFriendType {
     UNKNOWN,
     FOREST,
     DESERT,
+    FOREST_SPIRIT,
+    DESERT_SPIRIT,
 }
 
 [System.Serializable]
