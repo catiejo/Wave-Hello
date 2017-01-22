@@ -7,7 +7,10 @@ public class Prop : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        this.enabled = false;
+        if (Application.isPlaying)
+        {
+            this.enabled = false;
+        }
 	}
 	
 	// Update is called once per frame
