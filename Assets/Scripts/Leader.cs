@@ -85,7 +85,7 @@ public class Leader : MonoBehaviour
         var distance = offset.magnitude;
         if (targetWaypoint != null && distance < waypointArrivalDistance)
         {
-            if (Input.GetKey(KeyCode.Space) && targetWaypoint.nextAlt != null)
+            if (targetWaypoint.nextAlt != null && targetWaypoint.flipped)
             {
                 targetWaypoint = targetWaypoint.nextAlt;
             } else
