@@ -58,6 +58,16 @@ public class BiomeController : MonoBehaviour {
         var desert = Mathf.Max(alphamapData[0, 0, 0], alphamapData[0, 0, 2]);
         var forest = Mathf.Max(alphamapData[0, 0, 1], alphamapData[0, 0, 3]);
         var nextBiomeName = desert > forest ? "Desert" : "Forest";
+
+        var hits = Physics.RaycastAll(leader.transform.position + Vector3.up * 50, Vector3.down, float.MaxValue);
+        foreach (var hit in hits)
+        {
+            if (hit.transform.gameObject.tag != "Untagged")
+            {
+                nextBiomeName = hit.transform.gameObject.tag;
+            }
+        }
+
         if (currentName == nextBiomeName) return;
         var nextBiome = GetBiome(nextBiomeName);
         if (nextBiome != null)

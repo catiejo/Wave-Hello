@@ -19,6 +19,12 @@ public class Leader : MonoBehaviour
 
     public float friendXSeparationFactor = 0.75f;
 
+    public Transform highlightArrow;
+    public float friendArrowHeight = 0.4f;
+    public float signArrowHeight = 0.75f;
+    public Color friendArrowColor = Color.cyan;
+    public Color signArrowColor = Color.yellow;
+
     public Vector3[] trailPoints;
     public int trailDefinition = 5;
     public int maxTrailLength = 100;
@@ -149,12 +155,11 @@ public class Leader : MonoBehaviour
     }
 
 	void UpdateCircle(bool isFriend) {
-		var circle = highlight.transform.Find ("Pivot").Find ("Circle").gameObject;
-		var height = isFriend ? 0.4f : 0.75f;
-		var color = isFriend ? Color.cyan : Color.yellow;
-		color.a = 0.75f;
-		circle.GetComponent<SpriteRenderer> ().color = color;
-		circle.transform.localPosition = new Vector3 (0, height, 0);
+        if (highlightArrow == null) return;
+		var height = isFriend ? friendArrowHeight : signArrowHeight;
+		var color = isFriend ? friendArrowColor: signArrowColor;
+        highlightArrow.GetComponent<SpriteRenderer> ().color = color;
+        highlightArrow.transform.localPosition = new Vector3 (0, height, 0);
 	}
 
     void MaybeToggleWaypoint()
@@ -213,7 +218,7 @@ public class Leader : MonoBehaviour
             {
                 direction = followerRotation * Vector3.forward;
             }
-            var offset = x - y / 2.0f;
+            var offset = (x - y / 2.0f);
             friend.targetPosition = currentPoint + Quaternion.LookRotation(direction, Vector3.up) * new Vector3(Mathf.Pow(Mathf.Abs(offset), friendXSeparationFactor) * Mathf.Sign(offset), 0, 0) * friendDistance;
             Debug.DrawLine(currentPoint, friend.targetPosition, Color.red);
         }
