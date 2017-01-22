@@ -17,6 +17,13 @@ public class Leader : MonoBehaviour
     public float rotationDamping = 0.5f;
     public Quaternion followerRotation;
 
+    public float friendXSeparationFactor = 0.75f;
+
+    public Vector3[] trailPoints;
+    public int trailDefinition = 5;
+    public int maxTrailLength = 100;
+    public int nextTrailPoint = 0;
+
     public float cameraRotationDamping = 0.3f;
     public float cameraPitch = 90f;
 
@@ -25,6 +32,8 @@ public class Leader : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        trailPoints = new Vector3[maxTrailLength];
+
         FindClosestWaypoint();
         targetPosition = transform.position;
         followerRotation = transform.rotation;
@@ -177,6 +186,12 @@ public class Leader : MonoBehaviour
 
     void TravelWithFriends()
     {
+        var distance = (trailPoints[nextTrailPoint] - transform.position).magnitude;
+        if (distance > friendDistance / trailDefinition)
+        {
+            nextTrailPoint = (nextTrailPoint + 1) % trailPoints.Length;
+            trailPoints[nextTrailPoint] = transform.position;
+        }
         int x = 0;
         int y = 0;
         foreach (var friend in recruitedFriends)
@@ -191,7 +206,16 @@ public class Leader : MonoBehaviour
                 x += 1;
             }
             var triangleHeight = Mathf.Sqrt(2);
-            friend.targetPosition = transform.position + followerRotation * new Vector3(x - y / 2.0f, 0, -y / triangleHeight) * friendDistance;
+            var previousPoint = trailPoints[(trailPoints.Length + nextTrailPoint - (y - 1) * trailDefinition) % trailPoints.Length];
+            var currentPoint = trailPoints[(trailPoints.Length + nextTrailPoint - y * trailDefinition) % trailPoints.Length];
+            var direction = previousPoint - currentPoint;
+            if (direction.magnitude < Mathf.Epsilon)
+            {
+                direction = followerRotation * Vector3.forward;
+            }
+            var offset = x - y / 2.0f;
+            friend.targetPosition = currentPoint + Quaternion.LookRotation(direction, Vector3.up) * new Vector3(Mathf.Pow(Mathf.Abs(offset), friendXSeparationFactor) * Mathf.Sign(offset), 0, 0) * friendDistance;
+            Debug.DrawLine(currentPoint, friend.targetPosition, Color.red);
         }
     }
 
@@ -203,6 +227,12 @@ public class Leader : MonoBehaviour
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, targetWaypoint.transform.position);
+        }
+
+        foreach (var point in trailPoints)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(point, 0.1f);
         }
     }
 }
