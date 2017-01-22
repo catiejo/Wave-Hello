@@ -47,6 +47,7 @@ public class Friend : MonoBehaviour {
     public void Start()
     {
         joinSound = joinSound != null ? joinSound : GetComponent<AudioSource>();
+        leader = leader != null ? leader : FindObjectOfType<Leader>();
 
         homePosition = transform.position;
         targetPosition = transform.position;
@@ -83,7 +84,7 @@ public class Friend : MonoBehaviour {
     {
         yield return new WaitForSeconds(joinDelay);
 
-        if (Random.value < joinChance || !RequirementsFulfilled())
+        if (Random.value < joinChance && RequirementsFulfilled())
         {
             FindObjectOfType<EventManager>().JoinBand(this);
             if (joinSound != null)
