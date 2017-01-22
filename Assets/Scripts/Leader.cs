@@ -162,32 +162,36 @@ public class Leader : MonoBehaviour
         highlightArrow.transform.localPosition = new Vector3 (0, height, 0);
 	}
 
-    void MaybeToggleWaypoint()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && targetWaypoint != null && targetWaypoint.nextAlt)
-        {
-            targetWaypoint.Toggle();
-        }
-    }
+	void MaybeToggleWaypoint()
+	{
+		var touchReceived = Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Ended;
+		var inputReceived = Input.GetKeyDown (KeyCode.Space) || touchReceived;
+		if (inputReceived && targetWaypoint != null && targetWaypoint.nextAlt)
+		{
+			targetWaypoint.Toggle();
+		}
+	}
 
-    void MaybeRecruitClosestFriend()
-    {
-        if (closestFriend != null && Input.GetKeyDown(KeyCode.Space))
-        {
-            var audioSource = GetComponent<AudioSource>();
-            if (audioSource != null && helloClips.Length > 0)
-            {
-                audioSource.clip = helloClips[Random.Range(0, helloClips.Length)];
-                audioSource.Play();
-            }
-            var animation = GetComponent<Animation>();
-            if (animation != null)
-            {
-                animation.Play();
-            }
-            closestFriend.JoinBand();
-        }
-    }
+	void MaybeRecruitClosestFriend()
+	{
+		var touchReceived = Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Ended;
+		var inputReceived = Input.GetKeyDown (KeyCode.Space) || touchReceived;
+		if (closestFriend != null && inputReceived)
+		{
+			var audioSource = GetComponent<AudioSource>();
+			if (audioSource != null && helloClips.Length > 0)
+			{
+				audioSource.clip = helloClips[Random.Range(0, helloClips.Length)];
+				audioSource.Play();
+			}
+			var animation = GetComponent<Animation>();
+			if (animation != null)
+			{
+				animation.Play();
+			}
+			closestFriend.JoinBand();
+		}
+	}
 
     void TravelWithFriends()
     {
