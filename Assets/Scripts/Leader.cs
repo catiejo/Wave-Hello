@@ -65,8 +65,9 @@ public class Leader : MonoBehaviour
         FollowWaypoints();
         TravelWithFriends();
         FindClosestFriend();
-        HighlightClosestFriend();
+        UpdateHighlight();
         MaybeRecruitClosestFriend();
+        MaybeToggleWaypoint();
     }
 
     void FollowWaypoints()
@@ -111,19 +112,36 @@ public class Leader : MonoBehaviour
         }
     }
 
-    void HighlightClosestFriend()
+    void UpdateHighlight()
     {
         if (highlight != null)
         {
-            if (closestFriend != null)
+            if (targetWaypoint != null && targetWaypoint.nextAlt)
             {
                 highlight.SetActive(true);
-                highlight.transform.position = closestFriend.transform.position;
+                highlight.transform.position = targetWaypoint.sign != null ?
+                    targetWaypoint.sign.transform.position : targetWaypoint.transform.position;
             }
             else
             {
-                highlight.SetActive(false);
+                if (closestFriend != null)
+                {
+                    highlight.SetActive(true);
+                    highlight.transform.position = closestFriend.transform.position;
+                }
+                else
+                {
+                    highlight.SetActive(false);
+                }
             }
+        }
+    }
+
+    void MaybeToggleWaypoint()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && targetWaypoint != null && targetWaypoint.nextAlt)
+        {
+            targetWaypoint.Toggle();
         }
     }
 

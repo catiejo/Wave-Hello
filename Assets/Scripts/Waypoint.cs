@@ -7,9 +7,47 @@ public class Waypoint : MonoBehaviour {
     public Waypoint next;
     public Waypoint nextAlt;
 
+    public bool flipped = false;
+    public Signpost sign;
+
     // Use this for initialization
     void Start () {
+        FindSign();
 	}
+
+
+    void FindSign()
+    {
+        if (sign == null && nextAlt != null)
+        {
+            Signpost bestSign = null;
+            var minDistance = 0f;
+            var signs = FindObjectsOfType<Signpost>();
+            foreach (var sign in signs)
+            {
+                var distance = (sign.transform.position - transform.position).magnitude;
+                if (bestSign == null || distance < minDistance)
+                {
+                    bestSign = sign;
+                    minDistance = distance;
+                }
+            }
+            sign = bestSign;
+        }
+    }
+
+    public void Toggle()
+    {
+        if (flipped)
+        {
+            flipped = false;
+            if (sign != null) sign.UnFlip();
+        } else
+        {
+            flipped = true;
+            if (sign != null) sign.Flip();
+        }
+    }
 
     private void OnDrawGizmos()
     {
