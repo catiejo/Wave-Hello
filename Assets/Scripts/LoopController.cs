@@ -15,7 +15,11 @@ public class LoopController : MonoBehaviour {
 //	public AudioMixerGroup audioGroup;
 	public FriendType[] friendTypes;
 
-	private List<List<AudioSource>> _audioSources = new List<List<AudioSource>> ();
+    public float fadingPrecision = 0.05f;
+    public float fadingDuration = 3f;
+
+
+    private List<List<AudioSource>> _audioSources = new List<List<AudioSource>> ();
 
 	void Start() {
 		foreach (FriendType friend in friendTypes) {
@@ -69,9 +73,9 @@ public class LoopController : MonoBehaviour {
 	private IEnumerator FadeIn (AudioSource source) {
         var volume = source.volume;
 		while (volume < 1.0f) {
-			volume += 0.1f;
+			volume += fadingPrecision;
             source.volume = Mathf.Clamp01(volume);
-			yield return new WaitForSeconds (0.25f);
+			yield return new WaitForSeconds (fadingDuration * fadingPrecision);
 		}
 	}
 
@@ -79,10 +83,10 @@ public class LoopController : MonoBehaviour {
 		//FIXME: Could cause problems if called while FadeIn is running on same object
 		//Maybe add time limit?
 		var volume = source.volume;
-		while (volume > 1.0f) {
-			volume -= 0.1f;
+		while (volume > 0.0f) {
+			volume -= fadingPrecision;
 			source.volume = Mathf.Clamp01(volume);
-			yield return new WaitForSeconds (0.25f);
+			yield return new WaitForSeconds (fadingDuration * fadingPrecision);
 		}
 	}
 

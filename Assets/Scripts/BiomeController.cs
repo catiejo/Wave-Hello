@@ -58,6 +58,7 @@ public class BiomeController : MonoBehaviour {
         var desert = Mathf.Max(alphamapData[0, 0, 0], alphamapData[0, 0, 2]);
         var forest = Mathf.Max(alphamapData[0, 0, 1], alphamapData[0, 0, 3]);
         var nextBiomeName = desert > forest ? "Desert" : "Forest";
+        if (currentName == nextBiomeName) return;
         var nextBiome = GetBiome(nextBiomeName);
         if (nextBiome != null)
         {
