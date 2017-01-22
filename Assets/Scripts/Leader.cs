@@ -118,6 +118,7 @@ public class Leader : MonoBehaviour
         {
             if (targetWaypoint != null && targetWaypoint.nextAlt)
             {
+				UpdateCircle (false);
                 highlight.SetActive(true);
                 highlight.transform.position = targetWaypoint.sign != null ?
                     targetWaypoint.sign.transform.position : targetWaypoint.transform.position;
@@ -126,6 +127,7 @@ public class Leader : MonoBehaviour
             {
                 if (closestFriend != null)
                 {
+					UpdateCircle (true);
                     highlight.SetActive(true);
                     highlight.transform.position = closestFriend.transform.position;
                 }
@@ -136,6 +138,15 @@ public class Leader : MonoBehaviour
             }
         }
     }
+
+	void UpdateCircle(bool isFriend) {
+		var circle = highlight.transform.Find ("Pivot").Find ("Circle").gameObject;
+		var height = isFriend ? 0.4f : 0.75f;
+		var color = isFriend ? Color.cyan : Color.yellow;
+		color.a = 0.75f;
+		circle.GetComponent<SpriteRenderer> ().color = color;
+		circle.transform.localPosition = new Vector3 (0, height, 0);
+	}
 
     void MaybeToggleWaypoint()
     {
