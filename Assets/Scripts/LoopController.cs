@@ -4,9 +4,8 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 [System.Serializable]
-
 public class FriendType {
-	public string name;
+	public EFriendType type;
 	public AudioClip[] clips;
 	public int count;
 }
@@ -46,7 +45,7 @@ public class LoopController : MonoBehaviour {
 		}
 		FriendType friendType = friendTypes[friendIndex];
 		AddTrack (friendType);
-		Debug.Log (friendType.name + " #" + friendType.count + " joined the band.");
+		Debug.Log (friendType.type + " #" + friendType.count + " joined the band.");
 	}
 
 	public void LeaveBand(Friend friend) {
@@ -55,7 +54,7 @@ public class LoopController : MonoBehaviour {
 			return;
 		}
 		FriendType friendType = friendTypes[friendIndex];
-		Debug.Log (friendType.name + " #" + friendType.count + " left the band.");
+		Debug.Log (friendType.type + " #" + friendType.count + " left the band.");
 		RemoveTrack (friendType);
 	}
 
@@ -66,7 +65,7 @@ public class LoopController : MonoBehaviour {
 		if (friend.count > friend.clips.Length) {
 			return;
 		}
-		AudioSource track = _audioSources[FindFriend(friend.name)][friend.count - 1];
+		AudioSource track = _audioSources[FindFriend(friend.type)][friend.count - 1];
 		StartCoroutine (FadeIn (track));
 	}
 
@@ -90,10 +89,10 @@ public class LoopController : MonoBehaviour {
 		}
 	}
 
-	private int FindFriend(string name) {
+	private int FindFriend(EFriendType type) {
 		int count = 0;
 		foreach (FriendType friend in friendTypes) {
-			if (friend.name == name) {
+			if (friend.type == type) {
 				return count;
 			}
 			count++;
@@ -107,7 +106,7 @@ public class LoopController : MonoBehaviour {
 		if (friend.count >= friend.clips.Length) {
 			return;
 		}
-		AudioSource track = _audioSources[FindFriend(friend.name)][friend.count]; //Not - 1 because friend.count is already decremented
+		AudioSource track = _audioSources[FindFriend(friend.type)][friend.count]; //Not - 1 because friend.count is already decremented
 		StartCoroutine (FadeOut (track));
 	}
 }

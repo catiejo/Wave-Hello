@@ -2,6 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EFriendType {
+    UNKNOWN,
+    FOREST,
+    DESERT,
+}
+
+[System.Serializable]
+public class FriendRequirements
+{
+    public EFriendType type;
+    public int count;
+    public int level;
+}
+
 public class Friend : MonoBehaviour {
 
     public float minStay = 10f;
@@ -16,11 +30,14 @@ public class Friend : MonoBehaviour {
     public float joinDelay = 1.0f;
     public float joinChance = 0.7f;
 
-    public string friendType = "test";
+    public EFriendType friendType = EFriendType.UNKNOWN;
     public AudioSource helloSound;
     public AudioSource joinSound;
     public AudioSource noSound;
     public AudioSource leaveSound;
+
+    public int level;
+    public FriendRequirements[] requirements;
 
     private bool _initialCanBeRecruited;
 
@@ -36,7 +53,7 @@ public class Friend : MonoBehaviour {
     public void JoinBand()
     {
         canBeRecruited = false;
-        StartCoroutine("Joining");
+        StartCoroutine(Joining());
     }
 
     public IEnumerator Joining()
